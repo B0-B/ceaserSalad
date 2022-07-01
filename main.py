@@ -3,7 +3,7 @@
 # Main Code For ceaserSalad
 #
 class engine:
-    soup = '''abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~0123456789 '''
+    soup = '''abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~0123456789 \n\t'''
     def __init__(self):
         self.map = {}
         for char in self.soup:
