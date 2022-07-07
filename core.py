@@ -7,13 +7,15 @@ import tkinter as tk
 from tkinter import scrolledtext, N, E, S, W
 from tkinter import filedialog, simpledialog
 from pathlib import Path
+import ctypes
 
 
 class engine:
 
     soup = '''abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~0123456789 \n\t'''
-    def __init__(self):
+    def __init__(self, blocking=True):
         self.map = {}
+        self.block = blocking
         for char in self.soup:
             self.map[char] = self.soup.index(char)
     def encrypt(self, plainText, secret):
@@ -32,8 +34,10 @@ class engine:
         try:
             return self.soup[(self.map[letter] + sign * self.map[secret[ind % l]]) % s]
         except:
-            raise ValueError(f'String includes invalid characters, allowed are \n{self.soup}')
-
+            if self.block:
+                raise ValueError(f'String includes invalid characters, allowed are \n{self.soup}')
+            else:
+                return letter
 
 class editor (tk.Tk):
 
@@ -42,12 +46,18 @@ class editor (tk.Tk):
         tk.Tk.__init__(self)
 
         self.title("ceaserSalad")
-        self.engine = engine()
+
+        # load the encryption engine
+        self.engine = engine(blocking=False)
+
+        # adjust resolution
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        self.tk.call('tk', 'scaling', 2.0)
         
         # window geometry
         self.size = (500, 600)
         self.geometry("{}x{}".format(*self.size))
-        self.navHeight = 20
+        self.navHeight = 40
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1) 
 
