@@ -60,6 +60,10 @@ class editor (tk.Tk):
 
         self.mainloop()
 
+    def about (self):
+
+        pass 
+
     def build (self):
 
         self.navBar = tk.Frame(self, height=self.navHeight, bg="#ddd")
@@ -71,6 +75,8 @@ class editor (tk.Tk):
         self.fileDropDown["menu"] = self.fileDropDown.menu  
         self.fileDropDown.menu.add_command(label='Open', command=self.open)
         self.fileDropDown.menu.add_command(label='Save', command=self.save)
+        self.fileDropDown.menu.add_command(label='Save as', command=self.save_as)
+        self.fileDropDown.menu.add_command(label='About', command=self.save_as)
         self.fileDropDown.grid(row=0, column=0)
 
         self.encryptButton = tk.Button(self.navBar, text="Encrypt", command=self.encryptAction)
@@ -124,12 +130,28 @@ class editor (tk.Tk):
     def save (self):
 
         '''
-        Open file path routine.
+        Quick save routine.
         '''
 
         if not self.savePath:
-            self.savePath = Path(filedialog.askopenfilename(initialdir="~", filetypes=self.fileTypes))
-        
+           self.save_as()
+           return
+
         # drop file content into text field
         with open(self.savePath, 'w+') as f:
-            self.textField.set(f.write(self.get()))
+            f.write(self.get())
+    
+    def save_as (self):
+
+        '''
+        Save as routine.
+        '''
+
+        # override the savepath
+        f = filedialog.asksaveasfile(initialdir="~", defaultextension=self.fileTypes[0][1])
+        self.savePath = Path(f.name)
+        f.write('*')
+        f.close()
+
+        # quick save
+        self.save()
